@@ -1,7 +1,7 @@
 <title>Events ATL — Eastside &amp; Midtown Event Calendar</title>
 
 <!-- ==========================================================
-     CUTE ATL — a month-at-a-time calendar of real events in
+     Events ATL — a month-at-a-time calendar of real events in
      Reynoldstown · Inman Park · Old Fourth Ward · Poncey-Highland · Midtown
 
      TO ADD OR EDIT AN EVENT: scroll to the EVENTS array below.
@@ -577,7 +577,7 @@ footer a:hover { text-decoration-color: currentColor; }
 
   <header class="mast">
     <div>
-      <h1>Cute <em>ATL</em></h1>
+      <h1>Events <em>ATL</em></h1>
       <p class="tagline">A month at a time on the eastside &amp; in Midtown — trivia, vinyl nights, movies in the grove, markets, and the occasional parade.</p>
     </div>
     <div class="mast-meta">
@@ -1242,8 +1242,8 @@ function icsHref(ev, d) {
   })();
 
   const lines = [
-    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Cute ATL//EN", "BEGIN:VEVENT",
-    "UID:" + iso(d) + "-" + ev.name.replace(/\W/g, "") + "@cute-atl",
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Events ATL//EN", "BEGIN:VEVENT",
+    "UID:" + iso(d) + "-" + ev.name.replace(/\W/g, "") + "@events-atl",
     "DTSTART;TZID=America/New_York:" + stamp(d, ev.time),
     "DTEND;TZID=America/New_York:" + dtEnd,
     "SUMMARY:" + esc(ev.name),

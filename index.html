@@ -1,0 +1,1275 @@
+<title>Cute ATL — Eastside &amp; Midtown Event Calendar</title>
+
+<!-- ==========================================================
+     CUTE ATL — a month-at-a-time calendar of real events in
+     Reynoldstown · Inman Park · Old Fourth Ward · Poncey-Highland · Midtown
+
+     TO ADD OR EDIT AN EVENT: scroll to the EVENTS array below.
+     Everything else is machinery you can leave alone.
+     ========================================================== -->
+
+<style>
+/* ---------- Tokens. Light is the base; dark redefines values only. ---------- */
+:root {
+  --ground:    #F1F3EC;
+  --surface:   #FBFCF7;
+  --surface-2: #E7EBE0;
+  --ink:       #1B2620;
+  --ink-soft:  #4C5A51;
+  --ink-faint: #7A877F;
+  --rule:      #D4DACD;
+  --rule-soft: #E4E9DD;
+  --shadow:    0 1px 2px rgba(27,38,32,.05), 0 10px 28px -14px rgba(27,38,32,.22);
+  --chip-bg:   rgba(255,255,255,.62);
+  --today-ink: #B8481F;
+
+  --h-reynoldstown: #B8481F;
+  --h-inman:        #6B3FA0;
+  --h-o4w:          #07747A;
+  --h-poncey:       #BB2A60;
+  --h-midtown:      #946C00;
+  --h-beltline:     #416A1F;
+
+  --font-display: "Superclarendon", "Bookman Old Style", "Rockwell", "Roboto Slab", Georgia, serif;
+  --font-body: "Avenir Next", "Avenir", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-util: ui-monospace, "SF Mono", "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
+
+  --r: 10px;
+  --maxw: 1240px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:    #121815;
+    --surface:   #1A211D;
+    --surface-2: #232B26;
+    --ink:       #E9EFE7;
+    --ink-soft:  #A8B4AC;
+    --ink-faint: #77837B;
+    --rule:      #2E3832;
+    --rule-soft: #232B26;
+    --shadow:    0 1px 2px rgba(0,0,0,.4), 0 12px 30px -14px rgba(0,0,0,.7);
+    --chip-bg:   rgba(255,255,255,.045);
+    --today-ink: #F0895A;
+
+    --h-reynoldstown: #F0895A;
+    --h-inman:        #B694EC;
+    --h-o4w:          #45C8C2;
+    --h-poncey:       #FF80AC;
+    --h-midtown:      #E5B93F;
+    --h-beltline:     #93C765;
+  }
+}
+:root[data-theme="dark"] {
+  --ground:    #121815;
+  --surface:   #1A211D;
+  --surface-2: #232B26;
+  --ink:       #E9EFE7;
+  --ink-soft:  #A8B4AC;
+  --ink-faint: #77837B;
+  --rule:      #2E3832;
+  --rule-soft: #232B26;
+  --shadow:    0 1px 2px rgba(0,0,0,.4), 0 12px 30px -14px rgba(0,0,0,.7);
+  --chip-bg:   rgba(255,255,255,.045);
+  --today-ink: #F0895A;
+
+  --h-reynoldstown: #F0895A;
+  --h-inman:        #B694EC;
+  --h-o4w:          #45C8C2;
+  --h-poncey:       #FF80AC;
+  --h-midtown:      #E5B93F;
+  --h-beltline:     #93C765;
+}
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+:focus-visible {
+  outline: 2px solid var(--hue, var(--ink));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 20px 72px;
+}
+
+/* ---------- Marquee rule: six dots, one per neighborhood ---------- */
+.marquee {
+  display: flex;
+  gap: 6px;
+  padding: 18px 0 0;
+  justify-content: flex-start;
+}
+.marquee i {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--d);
+  display: block;
+}
+
+/* ---------- Masthead ---------- */
+header.mast {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 28px;
+  padding: 14px 0 22px;
+  border-bottom: 1px solid var(--rule);
+}
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 5.2vw, 46px);
+  line-height: 1.02;
+  letter-spacing: -.015em;
+  margin: 0;
+  text-wrap: balance;
+}
+h1 em {
+  font-style: normal;
+  color: var(--h-reynoldstown);
+}
+.tagline {
+  margin: 8px 0 0;
+  color: var(--ink-soft);
+  max-width: 46ch;
+  font-size: 14.5px;
+}
+.mast-meta {
+  font-family: var(--font-util);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  text-align: right;
+  line-height: 1.7;
+}
+
+/* ---------- Controls bar ---------- */
+.controls {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--ground) 92%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule);
+  padding: 12px 20px;
+}
+.controls-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+}
+.monthnav { display: flex; align-items: center; gap: 10px; }
+.monthnav button.arrow {
+  width: 34px; height: 34px;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 15px;
+  line-height: 1;
+  transition: border-color .15s, transform .15s;
+}
+.monthnav button.arrow:hover { border-color: var(--ink-faint); transform: translateY(-1px); }
+.monthlabel {
+  font-family: var(--font-display);
+  font-size: 22px;
+  min-width: 8.5ch;
+  letter-spacing: -.01em;
+}
+.monthlabel span { color: var(--ink-faint); font-family: var(--font-util); font-size: 14px; }
+button.today-btn {
+  border: 1px solid var(--rule);
+  background: transparent;
+  border-radius: 999px;
+  padding: 5px 13px;
+  font-family: var(--font-util);
+  font-size: 11px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+button.today-btn:hover { border-color: var(--ink-faint); color: var(--ink); }
+
+/* ---------- Legend / filters ---------- */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-left: auto;
+}
+.hood-chip {
+  --hue: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 5px 12px 5px 9px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  transition: background .15s, border-color .15s, color .15s;
+}
+.hood-chip .dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--hue);
+  flex: none;
+  transition: box-shadow .15s;
+}
+.hood-chip[aria-pressed="true"] {
+  color: var(--hue);
+  border-color: color-mix(in srgb, var(--hue) 45%, transparent);
+  background: color-mix(in srgb, var(--hue) 10%, var(--surface));
+}
+.hood-chip[aria-pressed="false"] { opacity: .5; }
+.hood-chip[aria-pressed="false"] .dot { background: var(--ink-faint); }
+.hood-chip:hover { border-color: color-mix(in srgb, var(--hue) 55%, transparent); }
+
+/* ---------- Weekday header ---------- */
+.dow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin: 22px 0 6px;
+}
+.dow div {
+  font-family: var(--font-util);
+  font-size: 10.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding-left: 3px;
+}
+
+/* ---------- Month grid ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.cell {
+  position: relative;
+  min-height: 132px;
+  background: var(--surface);
+  border: 1px solid var(--rule-soft);
+  border-radius: var(--r);
+  padding: 7px 7px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  transition: border-color .15s, box-shadow .15s;
+}
+.cell:hover { border-color: var(--rule); box-shadow: var(--shadow); }
+.cell.pad { background: transparent; border-color: transparent; min-height: 0; }
+.cell.pad:hover { box-shadow: none; }
+.cell.weekend { background: color-mix(in srgb, var(--surface-2) 45%, var(--surface)); }
+.cell.past { opacity: .55; }
+
+.daynum {
+  position: relative;
+  font-family: var(--font-util);
+  font-size: 12px;
+  color: var(--ink-faint);
+  padding: 1px 4px 3px;
+  align-self: flex-start;
+  font-variant-numeric: tabular-nums;
+}
+.cell.today .daynum { color: var(--today-ink); font-weight: 700; }
+/* the one flourish: today gets circled by hand, like a paper calendar */
+.today-ring {
+  position: absolute;
+  left: -6px; top: -5px;
+  width: 34px; height: 26px;
+  pointer-events: none;
+  overflow: visible;
+}
+.today-ring path {
+  fill: none;
+  stroke: var(--today-ink);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  opacity: .85;
+}
+
+/* ---------- Event chips ---------- */
+.ev {
+  --hue: var(--ink);
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-left: 2.5px solid var(--hue);
+  background: var(--chip-bg);
+  border-radius: 3px 6px 6px 3px;
+  padding: 3px 6px 4px;
+  font-size: 11.5px;
+  line-height: 1.28;
+  color: var(--ink);
+  transition: background .13s, transform .13s;
+}
+.ev:hover {
+  background: color-mix(in srgb, var(--hue) 13%, var(--chip-bg));
+  transform: translateX(1px);
+}
+.ev .t {
+  display: block;
+  font-family: var(--font-util);
+  font-size: 9.5px;
+  letter-spacing: .04em;
+  color: var(--hue);
+  margin-bottom: 1px;
+}
+.ev .n {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.more {
+  border: 0; background: none;
+  font-family: var(--font-util);
+  font-size: 10px;
+  letter-spacing: .05em;
+  color: var(--ink-faint);
+  padding: 1px 0 0 4px;
+  text-align: left;
+}
+.more:hover { color: var(--ink); }
+
+/* ---------- Agenda (mobile) ---------- */
+.agenda { display: none; flex-direction: column; gap: 2px; margin-top: 18px; }
+.agenda-day {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--rule-soft);
+}
+.agenda-day.today .ad-date { color: var(--today-ink); }
+.ad-date {
+  font-family: var(--font-util);
+  font-size: 11px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  line-height: 1.35;
+  padding-top: 3px;
+}
+.ad-date b { display: block; font-size: 19px; letter-spacing: 0; color: var(--ink); }
+.agenda-day.today .ad-date b { color: var(--today-ink); }
+.ad-events { display: flex; flex-direction: column; gap: 5px; }
+
+/* ---------- Detail drawer ---------- */
+.scrim {
+  position: fixed; inset: 0;
+  background: rgba(12,18,15,.42);
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+}
+.scrim.open { opacity: 1; pointer-events: auto; }
+.drawer {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: min(420px, 100%);
+  background: var(--surface);
+  border-left: 1px solid var(--rule);
+  z-index: 41;
+  transform: translateX(101%);
+  transition: transform .26s cubic-bezier(.4,0,.2,1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -18px 0 44px -24px rgba(0,0,0,.5);
+}
+.drawer.open { transform: none; }
+.drawer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 20px 14px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.drawer-head h2 {
+  font-family: var(--font-display);
+  font-size: 21px;
+  margin: 0;
+  letter-spacing: -.01em;
+}
+.drawer-head .sub {
+  font-family: var(--font-util);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-top: 4px;
+}
+.x {
+  border: 1px solid var(--rule);
+  background: transparent;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  flex: none;
+  display: grid; place-items: center;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1;
+}
+.x:hover { border-color: var(--ink-faint); color: var(--ink); }
+.drawer-body {
+  overflow-y: auto;
+  padding: 6px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.d-ev {
+  --hue: var(--ink);
+  padding: 15px 0 16px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.d-ev:last-child { border-bottom: 0; }
+.d-ev .hood {
+  font-family: var(--font-util);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--hue);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.d-ev .hood::before {
+  content: "";
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--hue);
+}
+.d-ev h3 {
+  font-family: var(--font-display);
+  font-size: 17.5px;
+  margin: 7px 0 5px;
+  line-height: 1.22;
+  letter-spacing: -.005em;
+  text-wrap: balance;
+}
+.d-ev .line {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-variant-numeric: tabular-nums;
+}
+.d-ev .line b { font-weight: 600; color: var(--ink); }
+.d-ev .note {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+.d-ev .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.tag {
+  font-family: var(--font-util);
+  font-size: 10px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 3px 9px;
+  color: var(--ink-faint);
+}
+.tag.free { color: var(--h-beltline); border-color: color-mix(in srgb, var(--h-beltline) 40%, transparent); }
+.d-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.d-actions a {
+  font-family: var(--font-util);
+  font-size: 10.5px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid color-mix(in srgb, var(--hue) 40%, transparent);
+  color: var(--hue);
+  border-radius: 999px;
+  padding: 5px 12px;
+  transition: background .15s;
+}
+.d-actions a:hover { background: color-mix(in srgb, var(--hue) 12%, transparent); }
+
+.empty {
+  color: var(--ink-faint);
+  font-size: 14px;
+  padding: 34px 0;
+  text-align: center;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+  font-size: 13px;
+  color: var(--ink-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+footer p { margin: 0; max-width: 62ch; }
+footer a { color: var(--ink); text-decoration-color: var(--rule); text-underline-offset: 2px; }
+footer a:hover { text-decoration-color: currentColor; }
+.count {
+  font-family: var(--font-util);
+  font-size: 11px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .cell { min-height: 108px; }
+  .ev .n { -webkit-line-clamp: 1; }
+}
+@media (max-width: 720px) {
+  .dow, .grid { display: none; }
+  .agenda { display: flex; }
+  .legend { margin-left: 0; }
+  .controls-inner { gap: 10px 12px; }
+  .mast-meta { text-align: left; }
+  header.mast { align-items: flex-start; }
+  .ev { font-size: 13px; padding: 6px 9px 7px; }
+  .ev .t { font-size: 10.5px; }
+  .ev .n { -webkit-line-clamp: 3; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+</style>
+
+<div class="wrap">
+  <div class="marquee" aria-hidden="true">
+    <i style="--d:var(--h-reynoldstown)"></i>
+    <i style="--d:var(--h-inman)"></i>
+    <i style="--d:var(--h-o4w)"></i>
+    <i style="--d:var(--h-poncey)"></i>
+    <i style="--d:var(--h-midtown)"></i>
+    <i style="--d:var(--h-beltline)"></i>
+  </div>
+
+  <header class="mast">
+    <div>
+      <h1>Cute <em>ATL</em></h1>
+      <p class="tagline">A month at a time on the eastside &amp; in Midtown — trivia, vinyl nights, movies in the grove, markets, and the occasional parade.</p>
+    </div>
+    <div class="mast-meta">
+      Reynoldstown · Inman Park<br>
+      Old Fourth Ward · Poncey-Highland<br>
+      Midtown · The Beltline
+    </div>
+  </header>
+</div>
+
+<div class="controls">
+  <div class="controls-inner">
+    <div class="monthnav">
+      <button class="arrow" id="prev" aria-label="Previous month">‹</button>
+      <div class="monthlabel" id="monthlabel"></div>
+      <button class="arrow" id="next" aria-label="Next month">›</button>
+      <button class="today-btn" id="jumpToday">Today</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="dow" aria-hidden="true">
+    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="agenda" id="agenda"></div>
+
+  <footer>
+    <p>
+      Every event here is a real, sourced listing — click any event for the venue's own page.
+      Recurring nights are marked <em>weekly</em> or <em>monthly</em>; bars change their schedules,
+      so check the venue link before you head out. Last verified <strong>August 17, 2026</strong>.
+    </p>
+    <div class="count" id="count"></div>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" hidden>
+  <div class="drawer-head">
+    <div>
+      <h2 id="drawerTitle"></h2>
+      <div class="sub" id="drawerSub"></div>
+    </div>
+    <button class="x" id="closeDrawer" aria-label="Close">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</aside>
+
+<script>
+/* ============================================================================
+   NEIGHBORHOODS
+   ========================================================================== */
+const HOODS = {
+  reynoldstown: { name: "Reynoldstown",    v: "--h-reynoldstown" },
+  inman:        { name: "Inman Park",      v: "--h-inman" },
+  o4w:          { name: "Old Fourth Ward", v: "--h-o4w" },
+  poncey:       { name: "Poncey-Highland", v: "--h-poncey" },
+  midtown:      { name: "Midtown",         v: "--h-midtown" },
+  beltline:     { name: "Beltline",        v: "--h-beltline" }
+};
+
+/* ============================================================================
+   EVENTS  ←←← EDIT HERE
+
+   when:
+     {weekly: 0-6}                      Sun=0 … Sat=6
+     {weekly: 5, every: 2, anchor:"YYYY-MM-DD"}   biweekly, anchored to a real date
+     {monthly: 5, nth: 1}               1st Friday of the month  (nth: -1 = last)
+     {date: "YYYY-MM-DD"}               one-off
+     {dates: ["YYYY-MM-DD", ...]}       a handful of specific days
+   optional on any recurring rule: from:"YYYY-MM-DD", until:"YYYY-MM-DD"
+   ========================================================================== */
+const EVENTS = [
+
+  /* ---------------- REYNOLDSTOWN ---------------- */
+  {
+    name: "Reynoldstown Wheelbarrow Festival",
+    venue: "Lang-Carson Park", hood: "reynoldstown",
+    when: { date: "2026-09-19" }, time: "12:00 PM", end: "7:00 PM", cost: "Free",
+    note: "The neighborhood's signature block party — wheelbarrow parade, local vendors, live music. The 9th annual Reynoldstown .5K (yes, half a kilometer) runs the same morning.",
+    url: "https://www.wheelbarrowfestival.com/"
+  },
+
+  /* ---------------- INMAN PARK ---------------- */
+  {
+    name: "Vinyl Night at Stereo",
+    venue: "Stereo ATL · 900 DeKalb Ave", hood: "inman",
+    when: { weekly: 3 }, time: "7:00 PM", cost: "No cover",
+    note: "Hi-fi listening bar on the Reynoldstown line — coffee shop by day, cocktails and all-vinyl DJ sets by night. Wednesdays lean deep cuts: dub, ambient, deep house.",
+    url: "https://www.stereoatl.com/"
+  },
+  {
+    name: "Vinyl Night at Stereo",
+    venue: "Stereo ATL · 900 DeKalb Ave", hood: "inman",
+    when: { weekly: 4 }, time: "7:00 PM", cost: "No cover",
+    note: "Thursday selectors at the listening bar — jazz, funk, reggae on the big system.",
+    url: "https://www.stereoatl.com/"
+  },
+  {
+    name: "Vinyl Night at Stereo",
+    venue: "Stereo ATL · 900 DeKalb Ave", hood: "inman",
+    when: { weekly: 5 }, time: "7:00 PM", cost: "No cover",
+    note: "Friday sessions curated by Caleb Wheels, usually with a guest selector.",
+    url: "https://www.stereoatl.com/"
+  },
+  {
+    name: "Vinyl Night at Stereo",
+    venue: "Stereo ATL · 900 DeKalb Ave", hood: "inman",
+    when: { weekly: 6 }, time: "7:00 PM", cost: "No cover",
+    note: "Saturday night selections. Still no cover — walk in, sit down, listen.",
+    url: "https://www.stereoatl.com/"
+  },
+  {
+    name: "Tuesday Night Trivia",
+    venue: "Krog Street Market", hood: "inman",
+    when: { weekly: 2 }, time: "7:00 PM", end: "9:00 PM", cost: "Free",
+    note: "Free to enter, prizes on the line, and a whole food hall to graze between rounds.",
+    url: "https://www.thekrogdistrict.com/events"
+  },
+  {
+    name: "Adidas Runners Community Run",
+    venue: "Atlanta Stove Works breezeway", hood: "inman",
+    when: { weekly: 2 }, time: "6:30 PM", end: "7:30 PM", cost: "Free",
+    note: "Weekly community run/walk club that starts and ends at Krog — pace groups for everyone.",
+    url: "https://www.thekrogdistrict.com/events"
+  },
+  {
+    name: "Wine Down Wednesday",
+    venue: "Hop City @ Krog Street Market", hood: "inman",
+    when: { weekly: 3 }, time: "11:00 AM", end: "9:00 PM", cost: "$5 glasses",
+    note: "$5 wines by the glass plus a rotating bottle selection, all day into the evening.",
+    url: "https://www.thekrogdistrict.com/events"
+  },
+  {
+    name: "Friday Night Concert Series",
+    venue: "Krog Street Market", hood: "inman",
+    when: { weekly: 5, every: 2, anchor: "2026-08-21" }, time: "7:00 PM", end: "9:00 PM", cost: "Free",
+    note: "Every other Friday: local singer-songwriters and jazz combos in the market. Aug 21 is the Aliança Ensemble.",
+    url: "https://www.thekrogdistrict.com/events"
+  },
+  {
+    name: "Krog Indie Market",
+    venue: "Krog Street Market", hood: "inman",
+    when: { monthly: 6, nth: 1 }, time: "12:00 PM", cost: "Free",
+    note: "Atlanta Indie Market's first-Saturday pop-up — makers, vintage, prints, jewelry.",
+    url: "https://www.eventeny.com/events/aim-krog-indie-market-pop-up-12131/"
+  },
+  {
+    name: "Stove Works Supply Vintage Market",
+    venue: "Atlanta Stove Works", hood: "inman",
+    when: { date: "2026-08-22" }, time: "12:00 PM", end: "6:00 PM", cost: "Free",
+    note: "Vintage and handmade vendors take over the Stove Works courtyard.",
+    url: "https://www.thekrogdistrict.com/events"
+  },
+  {
+    name: "Game. Set. Match. — live dating show",
+    venue: "LikeMinds @ Krog", hood: "inman",
+    when: { date: "2026-08-21" }, time: "8:00 PM", end: "10:00 PM",
+    note: "A live, very Atlanta take on the dating-show format. Come to watch or come to play.",
+    url: "https://www.thekrogdistrict.com/events"
+  },
+  {
+    name: "Trail Mix Running Mixer",
+    venue: "Patagonia @ Krog Street Market", hood: "inman",
+    when: { date: "2026-08-29" }, time: "8:00 AM", end: "9:00 AM", cost: "Free",
+    note: "Saturday-morning run and hang hosted out of the Patagonia shop.",
+    url: "https://www.thekrogdistrict.com/events"
+  },
+  {
+    name: "Love Island Reunion Watch Party",
+    venue: "LikeMinds @ Krog", hood: "inman",
+    when: { date: "2026-08-31" }, time: "8:00 PM", end: "11:00 PM",
+    note: "Big screen, loud crowd, strong opinions.",
+    url: "https://www.thekrogdistrict.com/events"
+  },
+
+  /* ---------------- OLD FOURTH WARD ---------------- */
+  {
+    name: "Movie Monday + Campfires in the Grove",
+    venue: "Ladybird Grove & Mess Hall", hood: "o4w",
+    when: { weekly: 1 }, time: "7:30 PM", end: "10:00 PM", cost: "Free",
+    note: "A cult classic on the jumbotron, outside in the grove, with campfires and food-and-drink specials. Free — RSVP on their site to hold a spot. Moves indoors if the weather turns.",
+    url: "https://www.ladybirdatl.com/happenings"
+  },
+  {
+    name: "Chess Knight",
+    venue: "Ladybird Grove & Mess Hall", hood: "o4w",
+    when: { weekly: 3 }, time: "7:00 PM", end: "10:00 PM", cost: "Free",
+    note: "Boards out on the patio, all skill levels. Genuinely one of the sweeter weeknight hangs on the Beltline.",
+    url: "https://www.ladybirdatl.com/happenings"
+  },
+  {
+    name: "DJ at The 'Bird",
+    venue: "Ladybird Grove & Mess Hall", hood: "o4w",
+    when: { weekly: 6 }, time: "5:00 PM", end: "9:00 PM", cost: "Free",
+    note: "Saturday golden-hour DJ set on the Beltline-facing patio.",
+    url: "https://www.ladybirdatl.com/happenings"
+  },
+  {
+    name: "Trivia Night",
+    venue: "Pour Taproom Beltline · 661 Auburn Ave", hood: "o4w",
+    when: { weekly: 3 }, time: "7:30 PM", cost: "Free",
+    note: "Self-pour wall, pay by the ounce, trivia on Wednesdays. (The Midtown location does its trivia on Tuesdays instead.)",
+    url: "https://www.yelp.com/biz/pour-taproom-beltline-atlanta"
+  },
+  {
+    name: "Peak of the Week",
+    venue: "Skyline Park, The Roof at Ponce City Market", hood: "o4w",
+    when: { weekly: 3 }, time: "7:00 PM", end: "11:00 PM", cost: "$15",
+    note: "Rooftop carnival night — mini golf, the Heege slide, boardwalk games and a live DJ, with a themed run each month (Vintage Circus in September).",
+    url: "https://poncecityroof.com/skyline-park"
+  },
+  {
+    name: "Improv & scripted comedy",
+    venue: "Dad's Garage Theatre · 569 Ezzard St", hood: "o4w",
+    when: { weekly: 4 }, time: "8:00 PM",
+    note: "Award-winning improv, 400+ shows a year, full bar. Thursday–Saturday every week — check the site for which show is up.",
+    url: "https://www.dadsgarage.com/"
+  },
+  {
+    name: "Improv & scripted comedy",
+    venue: "Dad's Garage Theatre · 569 Ezzard St", hood: "o4w",
+    when: { weekly: 5 }, time: "8:00 PM",
+    note: "Award-winning improv, 400+ shows a year, full bar. Thursday–Saturday every week — check the site for which show is up.",
+    url: "https://www.dadsgarage.com/"
+  },
+  {
+    name: "Improv & scripted comedy",
+    venue: "Dad's Garage Theatre · 569 Ezzard St", hood: "o4w",
+    when: { weekly: 6 }, time: "8:00 PM",
+    note: "Award-winning improv, 400+ shows a year, full bar. Thursday–Saturday every week — check the site for which show is up.",
+    url: "https://www.dadsgarage.com/"
+  },
+
+  /* ---------------- PONCEY-HIGHLAND ---------------- */
+  {
+    name: "The Rocky Horror Picture Show w/ LDOD",
+    venue: "Plaza Theatre · 1049 Ponce de Leon Ave", hood: "poncey",
+    when: { weekly: 5 }, time: "11:00 PM",
+    note: "Atlanta's shadow cast, Lips Down on Dixie, has been doing this at the Plaza for decades. Every Friday at 11. Wear something you don't mind getting rice on.",
+    url: "https://www.plazaatlanta.com/now-showing/"
+  },
+  {
+    name: "Trivia at Manuel's",
+    venue: "Manuel's Tavern · 602 N Highland Ave", hood: "poncey",
+    when: { weekly: 2 }, time: "8:00 PM", cost: "Free",
+    note: "The classic Atlanta political-institution dive. Free to play, gift certificates for the winners.",
+    url: "https://trivianearme.net/atlanta/venues/manuel-s-tavern"
+  },
+  {
+    name: "Trivia at Moe's & Joe's",
+    venue: "Moe's & Joe's Tavern · 1033 N Highland Ave", hood: "poncey",
+    when: { weekly: 3 }, time: "8:00 PM", cost: "Free",
+    note: "Unchanged since 1947, cheap pitchers, big dog-friendly patio. A short walk up Highland from Poncey-Highland proper.",
+    url: "https://www.yelp.com/biz/moes-and-joes-tavern-atlanta-2"
+  },
+  {
+    name: "Freedom Farmers Market",
+    venue: "The Carter Center · 453 Freedom Pkwy", hood: "poncey",
+    when: { weekly: 6 }, time: "8:30 AM", end: "12:00 PM", cost: "Free",
+    note: "Year-round Saturday market: organic produce, pastured meat, eggs, pastries. Live music and a guest chef cooking hot food every week.",
+    url: "https://freedomfarmersmkt.com/"
+  },
+
+  /* ---------------- MIDTOWN ---------------- */
+  {
+    name: "High Frequency Friday",
+    venue: "High Museum of Art", hood: "midtown",
+    when: { monthly: 5, nth: 1 }, time: "6:00 PM", end: "10:00 PM", cost: "$30 · $10 member presale",
+    note: "First Friday of the month: happy hour meets art party. Atlanta's favorite DJs, the galleries open late, food vendors in the piazza. Member presale runs about ten days ahead — worth setting a reminder.",
+    url: "https://high.org/friday-nights/"
+  },
+  {
+    name: "Friday Jazz",
+    venue: "High Museum of Art", hood: "midtown",
+    when: { monthly: 5, nth: 3 }, time: "6:00 PM", end: "10:00 PM",
+    note: "Third Friday: leading jazz musicians from Atlanta and beyond in the atrium. Seating opens at 6 and is first-come, first-served.",
+    url: "https://high.org/friday-nights/"
+  },
+  {
+    name: "Cocktails in the Garden",
+    venue: "Atlanta Botanical Garden", hood: "midtown",
+    when: { weekly: 4, until: "2026-09-24" }, time: "5:00 PM", end: "9:00 PM",
+    note: "Thursdays through Sept 24. Specialty cocktails on a 'Cultures of the World' rotation, live music, lawn games, and the Niki de Saint Phalle sculptures lit up after dark. Card only — the Garden takes no cash.",
+    url: "https://atlantabg.org/plan-your-visit/atlanta-garden-calendar/cocktails-in-the-garden/"
+  },
+  {
+    name: "Piedmont Park Green Market",
+    venue: "Piedmont Park · 12th St entrance", hood: "midtown",
+    when: { weekly: 6 }, time: "9:00 AM", end: "1:00 PM", cost: "Free",
+    note: "Saturday-morning market run by the Conservancy — produce, flowers, prepared food, and a very good people-watching bench situation.",
+    url: "https://piedmontpark.org/calendar/"
+  },
+  {
+    name: "Yoga Flow at 10th Street Park",
+    venue: "10th Street Park", hood: "midtown",
+    when: { weekly: 2 }, time: "6:00 PM", end: "7:00 PM", cost: "Free",
+    note: "Free outdoor evening flow in the pocket park, hosted by Midtown Alliance. Bring your own mat.",
+    url: "https://www.midtownatl.com/events"
+  },
+  {
+    name: "Yoga in the Park",
+    venue: "Piedmont Park · Active Oval", hood: "midtown",
+    when: { date: "2026-08-25" }, time: "6:00 PM", end: "7:00 PM", cost: "Free",
+    note: "Dancing Dogs Yoga + lululemon + the Conservancy, out on the Active Oval. All levels, complimentary, just show up.",
+    url: "https://piedmontpark.org/calendar/"
+  },
+  {
+    name: "Weekly Walking Club",
+    venue: "Piedmont Park", hood: "midtown",
+    when: { weekly: 2 }, time: "10:00 AM", end: "10:45 AM", cost: "Free",
+    note: "Low-key Tuesday-morning loop with the Conservancy crowd.",
+    url: "https://piedmontpark.org/calendar/"
+  },
+  {
+    name: "Trivia Tuesday",
+    venue: "Pour Taproom Midtown", hood: "midtown",
+    when: { weekly: 2 }, time: "7:00 PM", cost: "Free",
+    note: "The Midtown self-pour taproom's Tuesday trivia. Pay by the ounce, so you can taste your way through the round.",
+    url: "https://www.midtownatl.com/do/-trivia-tuesdays-at-pour-taproom-midtown"
+  },
+  {
+    name: "Big Peach Social Run",
+    venue: "Big Peach Ride + Run, Midtown", hood: "midtown",
+    when: { weekly: 2 }, time: "6:30 PM", cost: "Free",
+    note: "Shop-hosted Tuesday social run, multiple pace groups, drinks after.",
+    url: "https://www.midtownatl.com/events"
+  },
+  {
+    name: "Atlanta Running Meetup",
+    venue: "Park Tavern", hood: "midtown",
+    when: { weekly: 1 }, time: "7:00 PM", end: "9:00 PM", cost: "Free",
+    note: "Monday run out of Park Tavern at the corner of Piedmont Park, then beers on the patio.",
+    url: "https://www.midtownatl.com/events"
+  },
+  {
+    name: "DJ Brunch",
+    venue: "Dos Caminos, Midtown", hood: "midtown",
+    when: { weekly: 0 }, time: "11:30 AM", end: "9:00 PM",
+    note: "Sunday brunch with a DJ and a dog-friendly patio.",
+    url: "https://www.midtownatl.com/events"
+  },
+  {
+    name: "Figure Drawing in the Park",
+    venue: "Piedmont Park", hood: "midtown",
+    when: { date: "2026-08-20" }, time: "7:00 PM", end: "9:00 PM",
+    note: "Conservancy-run life drawing session. Materials-light, beginner-welcome.",
+    url: "https://piedmontpark.org/calendar/"
+  },
+  {
+    name: "Stop the Violence Community Unity Festival",
+    venue: "Piedmont Park", hood: "midtown",
+    when: { date: "2026-08-22" }, time: "1:00 PM", end: "7:00 PM", cost: "Free",
+    note: "Afternoon community festival on the meadow.",
+    url: "https://piedmontpark.org/calendar/"
+  },
+  {
+    name: "Groovin' on the Square",
+    venue: "Colony Square", hood: "midtown",
+    when: { date: "2026-08-28" }, time: "6:00 PM", end: "8:00 PM", cost: "Free",
+    note: "Free live music on the Colony Square plaza — grab something from the food hall and post up.",
+    url: "https://www.midtownatl.com/events"
+  },
+  {
+    name: "Hamilton opens",
+    venue: "The Fox Theatre", hood: "midtown",
+    when: { date: "2026-09-02" }, time: "Evening",
+    note: "Opening night of the Fox run. Worth going just to look at the ceiling.",
+    url: "https://www.midtownatl.com/events"
+  },
+  {
+    name: "Dukes and Boots",
+    venue: "Piedmont Park", hood: "midtown",
+    when: { dates: ["2026-09-05", "2026-09-06"] }, time: "All day",
+    note: "Two-day festival on the park's big lawn.",
+    url: "https://piedmontpark.org/calendar/"
+  },
+
+  /* ---------------- BELTLINE / CITYWIDE ---------------- */
+  {
+    name: "Atlanta Beltline Lantern Parade",
+    venue: "Beltline Southwest Trail", hood: "beltline",
+    when: { date: "2026-09-19" }, time: "Evening", cost: "Free",
+    note: "The city's best night of the year. Tens of thousands of people walk the corridor carrying homemade lanterns, led by Chantelle Rytter's Krewe of the Grateful Gluttons and a string of live bands. It's on the Southwest Trail this year with an extended route — not your side of the Beltline, but go anyway. Build a lantern, or just bring one from the parade's workshops.",
+    url: "https://beltline.org/art/lantern-parade/"
+  }
+];
+
+/* ============================================================================
+   MACHINERY
+   ========================================================================== */
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DOW_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+const parseISO = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const dayKey = d => Math.floor(d.getTime() / 86400000);
+
+const TODAY = (() => { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); })();
+
+/* Does this event occur on date `d`? */
+function occursOn(ev, d) {
+  const w = ev.when;
+  if (w.from   && d < parseISO(w.from))   return false;
+  if (w.until  && d > parseISO(w.until))  return false;
+
+  if (w.date)  return iso(d) === w.date;
+  if (w.dates) return w.dates.includes(iso(d));
+
+  if (w.weekly !== undefined) {
+    if (d.getDay() !== w.weekly) return false;
+    if (w.every && w.every > 1) {
+      const anchor = parseISO(w.anchor);
+      const weeks = Math.round((dayKey(d) - dayKey(anchor)) / 7);
+      if (((weeks % w.every) + w.every) % w.every !== 0) return false;
+    }
+    return true;
+  }
+
+  if (w.monthly !== undefined) {
+    if (d.getDay() !== w.monthly) return false;
+    if (w.nth === -1) return d.getDate() + 7 > daysInMonth(d.getFullYear(), d.getMonth());
+    return Math.floor((d.getDate() - 1) / 7) + 1 === w.nth;
+  }
+  return false;
+}
+
+const daysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
+
+/* Sort key: minutes past midnight; untimed events sink to the bottom. */
+function minutesOf(ev) {
+  const m = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(ev.time || "");
+  if (!m) return 24 * 60 + 1;
+  let h = +m[1] % 12;
+  if (/pm/i.test(m[3])) h += 12;
+  return h * 60 + +m[2];
+}
+
+function cadence(ev) {
+  const w = ev.when;
+  if (w.weekly !== undefined) return w.every === 2 ? "Every other " + DOW_SHORT[w.weekly] : "Every " + DOW_SHORT[w.weekly];
+  if (w.monthly !== undefined) {
+    const ord = { 1: "1st", 2: "2nd", 3: "3rd", 4: "4th", "-1": "Last" }[w.nth] || w.nth + "th";
+    return ord + " " + DOW_SHORT[w.monthly] + " monthly";
+  }
+  return "One night only";
+}
+
+/* ---------- State ---------- */
+let view = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1);
+const active = new Set(Object.keys(HOODS));
+
+/* ---------- Legend ---------- */
+const legendEl = document.getElementById("legend");
+Object.entries(HOODS).forEach(([key, h]) => {
+  const b = document.createElement("button");
+  b.className = "hood-chip";
+  b.style.setProperty("--hue", `var(${h.v})`);
+  b.setAttribute("aria-pressed", "true");
+  b.innerHTML = `<span class="dot"></span>${h.name}`;
+  b.addEventListener("click", () => {
+    // click = toggle; if you'd isolated one hood, clicking it again restores all
+    if (active.has(key)) active.delete(key); else active.add(key);
+    if (active.size === 0) Object.keys(HOODS).forEach(k => active.add(k));
+    render();
+  });
+  legendEl.append(b);
+});
+
+/* ---------- Chip builder ---------- */
+function chip(ev, d) {
+  const b = document.createElement("button");
+  b.className = "ev";
+  b.style.setProperty("--hue", `var(${HOODS[ev.hood].v})`);
+  b.innerHTML = `<span class="t">${ev.time || ""}</span><span class="n"></span>`;
+  b.querySelector(".n").textContent = ev.name;
+  b.addEventListener("click", e => { e.stopPropagation(); openDay(d); });
+  return b;
+}
+
+/* ---------- Render ---------- */
+function render() {
+  const y = view.getFullYear(), m = view.getMonth();
+  document.getElementById("monthlabel").innerHTML = `${MONTHS[m]} <span>${y}</span>`;
+
+  Array.from(legendEl.children).forEach((b, i) => {
+    b.setAttribute("aria-pressed", active.has(Object.keys(HOODS)[i]) ? "true" : "false");
+  });
+
+  const grid = document.getElementById("grid");
+  const agenda = document.getElementById("agenda");
+  grid.replaceChildren();
+  agenda.replaceChildren();
+
+  const first = new Date(y, m, 1);
+  const lead = first.getDay();
+  const total = daysInMonth(y, m);
+  let monthCount = 0;
+
+  for (let i = 0; i < lead; i++) {
+    const pad = document.createElement("div");
+    pad.className = "cell pad";
+    grid.append(pad);
+  }
+
+  for (let day = 1; day <= total; day++) {
+    const d = new Date(y, m, day);
+    const evs = eventsOn(d);
+    monthCount += evs.length;
+
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    if (d.getDay() === 0 || d.getDay() === 6) cell.classList.add("weekend");
+    if (d < TODAY) cell.classList.add("past");
+    const isToday = d.getTime() === TODAY.getTime();
+    if (isToday) cell.classList.add("today");
+
+    const num = document.createElement("div");
+    num.className = "daynum";
+    num.textContent = day;
+    if (isToday) {
+      num.insertAdjacentHTML("afterbegin",
+        `<svg class="today-ring" viewBox="0 0 34 26" aria-hidden="true"><path d="M20.5 3.2C12.8 1.6 4.2 4.4 2.6 10.2c-1.5 5.5 4.4 11.4 12.9 12.6 8.9 1.2 16.4-2.4 17.2-8.1.7-5.2-5.1-10.1-13.4-11.3-1.1-.2-2.2-.3-3.3-.3"/></svg>`);
+      num.insertAdjacentHTML("beforeend", `<span class="sr" style="position:absolute;left:-9999px">Today</span>`);
+    }
+    cell.append(num);
+
+    const CAP = 4;
+    evs.slice(0, CAP).forEach(ev => cell.append(chip(ev, d)));
+    if (evs.length > CAP) {
+      const more = document.createElement("button");
+      more.className = "more";
+      more.textContent = `+ ${evs.length - CAP} more`;
+      more.addEventListener("click", e => { e.stopPropagation(); openDay(d); });
+      cell.append(more);
+    }
+    if (evs.length) {
+      cell.style.cursor = "pointer";
+      cell.addEventListener("click", () => openDay(d));
+    }
+    grid.append(cell);
+
+    /* agenda (mobile) — only days that have something */
+    if (evs.length) {
+      const row = document.createElement("div");
+      row.className = "agenda-day" + (isToday ? " today" : "") + (d < TODAY ? " past" : "");
+      if (d < TODAY) row.style.opacity = ".55";
+      row.innerHTML = `<div class="ad-date">${DOW_SHORT[d.getDay()]}<b>${day}</b></div>`;
+      const list = document.createElement("div");
+      list.className = "ad-events";
+      evs.forEach(ev => list.append(chip(ev, d)));
+      row.append(list);
+      agenda.append(row);
+    }
+  }
+
+  if (!monthCount) {
+    const e = document.createElement("div");
+    e.className = "empty";
+    e.textContent = "Nothing on the calendar for these neighborhoods this month.";
+    agenda.append(e);
+  }
+
+  document.getElementById("count").textContent =
+    `${monthCount} event${monthCount === 1 ? "" : "s"} in ${MONTHS[m]}`;
+}
+
+function eventsOn(d) {
+  return EVENTS
+    .filter(ev => active.has(ev.hood) && occursOn(ev, d))
+    .sort((a, b) => minutesOf(a) - minutesOf(b) || a.name.localeCompare(b.name));
+}
+
+/* ---------- Drawer ---------- */
+const drawer = document.getElementById("drawer");
+const scrim = document.getElementById("scrim");
+let lastFocus = null;
+
+function openDay(d) {
+  const evs = eventsOn(d);
+  if (!evs.length) return;
+  lastFocus = document.activeElement;
+
+  document.getElementById("drawerTitle").textContent =
+    `${DOW_SHORT[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
+  document.getElementById("drawerSub").textContent =
+    `${evs.length} thing${evs.length === 1 ? "" : "s"} going on`;
+
+  const body = document.getElementById("drawerBody");
+  body.replaceChildren();
+
+  evs.forEach(ev => {
+    const h = HOODS[ev.hood];
+    const el = document.createElement("div");
+    el.className = "d-ev";
+    el.style.setProperty("--hue", `var(${h.v})`);
+
+    const when = ev.end ? `${ev.time} – ${ev.end}` : (ev.time || "");
+    const free = ev.cost && /free|no cover/i.test(ev.cost);
+
+    el.innerHTML = `
+      <span class="hood">${h.name}</span>
+      <h3></h3>
+      <div class="line"><b class="w"></b><span class="v"></span></div>
+      <p class="note"></p>
+      <div class="tags">
+        <span class="tag">${cadence(ev)}</span>
+        ${ev.cost ? `<span class="tag ${free ? "free" : ""}">${ev.cost}</span>` : ""}
+      </div>
+      <div class="d-actions">
+        <a class="src" target="_blank" rel="noopener noreferrer">Venue page ↗</a>
+        <a class="ics" download>Add to calendar</a>
+      </div>`;
+
+    el.querySelector("h3").textContent = ev.name;
+    el.querySelector(".w").textContent = when;
+    el.querySelector(".v").textContent = ev.venue;
+    el.querySelector(".note").textContent = ev.note || "";
+    el.querySelector(".src").href = ev.url;
+    const a = el.querySelector(".ics");
+    a.href = icsHref(ev, d);
+    a.download = ev.name.replace(/[^\w]+/g, "-").toLowerCase() + ".ics";
+
+    body.append(el);
+  });
+
+  drawer.hidden = false;
+  requestAnimationFrame(() => { drawer.classList.add("open"); scrim.classList.add("open"); });
+  document.getElementById("closeDrawer").focus();
+}
+
+function closeDrawer() {
+  drawer.classList.remove("open");
+  scrim.classList.remove("open");
+  setTimeout(() => { drawer.hidden = true; }, 280);
+  if (lastFocus) lastFocus.focus();
+}
+
+/* ---------- .ics export ---------- */
+function icsHref(ev, d) {
+  const stamp = (date, timeStr) => {
+    const m = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(timeStr || "");
+    const dt = new Date(date);
+    if (m) {
+      let h = +m[1] % 12;
+      if (/pm/i.test(m[3])) h += 12;
+      dt.setHours(h, +m[2], 0, 0);
+    } else {
+      dt.setHours(19, 0, 0, 0);
+    }
+    return dt.getFullYear() + String(dt.getMonth()+1).padStart(2,"0") + String(dt.getDate()).padStart(2,"0")
+      + "T" + String(dt.getHours()).padStart(2,"0") + String(dt.getMinutes()).padStart(2,"0") + "00";
+  };
+  const esc = s => String(s || "").replace(/[\\;,]/g, m => "\\" + m).replace(/\n/g, "\\n");
+  const endTime = ev.end || null;
+  const dtEnd = endTime ? stamp(d, endTime) : (() => {
+    const t = stamp(d, ev.time);
+    return t.slice(0, 9) + String((+t.slice(9, 11) + 2) % 24).padStart(2, "0") + t.slice(11);
+  })();
+
+  const lines = [
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Cute ATL//EN", "BEGIN:VEVENT",
+    "UID:" + iso(d) + "-" + ev.name.replace(/\W/g, "") + "@cute-atl",
+    "DTSTART;TZID=America/New_York:" + stamp(d, ev.time),
+    "DTEND;TZID=America/New_York:" + dtEnd,
+    "SUMMARY:" + esc(ev.name),
+    "LOCATION:" + esc(ev.venue),
+    "DESCRIPTION:" + esc((ev.note ? ev.note + "\n\n" : "") + ev.url),
+    "URL:" + ev.url,
+    "END:VEVENT", "END:VCALENDAR"
+  ];
+  return "data:text/calendar;charset=utf-8," + encodeURIComponent(lines.join("\r\n"));
+}
+
+/* ---------- Wiring ---------- */
+document.getElementById("prev").addEventListener("click", () => { view.setMonth(view.getMonth() - 1); render(); });
+document.getElementById("next").addEventListener("click", () => { view.setMonth(view.getMonth() + 1); render(); });
+document.getElementById("jumpToday").addEventListener("click", () => {
+  view = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1); render();
+});
+document.getElementById("closeDrawer").addEventListener("click", closeDrawer);
+scrim.addEventListener("click", closeDrawer);
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !drawer.hidden) closeDrawer();
+  if (drawer.hidden) {
+    if (e.key === "ArrowLeft")  { view.setMonth(view.getMonth() - 1); render(); }
+    if (e.key === "ArrowRight") { view.setMonth(view.getMonth() + 1); render(); }
+  }
+});
+
+render();
+</script>

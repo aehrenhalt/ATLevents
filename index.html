@@ -29,6 +29,7 @@
   --h-poncey:       #BB2A60;
   --h-midtown:      #946C00;
   --h-beltline:     #416A1F;
+  --h-eastatl:      #2E5FA3;
 
   --font-display: "Superclarendon", "Bookman Old Style", "Rockwell", "Roboto Slab", Georgia, serif;
   --font-body: "Avenir Next", "Avenir", "Segoe UI", system-ui, -apple-system, sans-serif;
@@ -58,6 +59,7 @@
     --h-poncey:       #FF80AC;
     --h-midtown:      #E5B93F;
     --h-beltline:     #93C765;
+    --h-eastatl:      #7FAEEA;
   }
 }
 :root[data-theme="dark"] {
@@ -79,6 +81,7 @@
   --h-poncey:       #FF80AC;
   --h-midtown:      #E5B93F;
   --h-beltline:     #93C765;
+  --h-eastatl:      #7FAEEA;
 }
 
 /* ---------- Base ---------- */
@@ -105,7 +108,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   padding: 0 20px 72px;
 }
 
-/* ---------- Marquee rule: six dots, one per neighborhood ---------- */
+/* ---------- Marquee rule: seven dots, one per neighborhood ---------- */
 .marquee {
   display: flex;
   gap: 6px;
@@ -572,6 +575,7 @@ footer a:hover { text-decoration-color: currentColor; }
     <i style="--d:var(--h-o4w)"></i>
     <i style="--d:var(--h-poncey)"></i>
     <i style="--d:var(--h-midtown)"></i>
+    <i style="--d:var(--h-eastatl)"></i>
     <i style="--d:var(--h-beltline)"></i>
   </div>
 
@@ -583,7 +587,7 @@ footer a:hover { text-decoration-color: currentColor; }
     <div class="mast-meta">
       Reynoldstown · Inman Park<br>
       Old Fourth Ward · Poncey-Highland<br>
-      Midtown · The Beltline
+      Midtown · East Atlanta · The Beltline
     </div>
   </header>
 </div>
@@ -611,7 +615,7 @@ footer a:hover { text-decoration-color: currentColor; }
     <p>
       Every event here is a real, sourced listing — click any event for the venue's own page.
       Recurring nights are marked <em>weekly</em> or <em>monthly</em>; bars change their schedules,
-      so check the venue link before you head out. Last verified <strong>August 17, 2026</strong>.
+      so check the venue link before you head out. Last verified <strong>August 27, 2026</strong>.
     </p>
     <div class="count" id="count"></div>
   </footer>
@@ -639,6 +643,7 @@ const HOODS = {
   o4w:          { name: "Old Fourth Ward", v: "--h-o4w" },
   poncey:       { name: "Poncey-Highland", v: "--h-poncey" },
   midtown:      { name: "Midtown",         v: "--h-midtown" },
+  eastatl:      { name: "East Atlanta",    v: "--h-eastatl" },
   beltline:     { name: "Beltline",        v: "--h-beltline" }
 };
 
@@ -819,7 +824,7 @@ const EVENTS = [
   {
     name: "The Rocky Horror Picture Show w/ LDOD",
     venue: "Plaza Theatre · 1049 Ponce de Leon Ave", hood: "poncey",
-    when: { weekly: 5 }, time: "11:00 PM",
+    when: { weekly: 5 }, time: "11:00 PM", end: "11:55 PM",
     note: "Atlanta's shadow cast, Lips Down on Dixie, has been doing this at the Plaza for decades. Every Friday at 11. Wear something you don't mind getting rice on.",
     url: "https://www.plazaatlanta.com/now-showing/"
   },
@@ -966,6 +971,109 @@ const EVENTS = [
     when: { date: "2026-09-19" }, time: "Evening", cost: "Free",
     note: "The city's best night of the year. Tens of thousands of people walk the corridor carrying homemade lanterns, led by Chantelle Rytter's Krewe of the Grateful Gluttons and a string of live bands. It's on the Southwest Trail this year with an extended route — not your side of the Beltline, but go anyway. Build a lantern, or just bring one from the parade's workshops.",
     url: "https://beltline.org/art/lantern-parade/"
+  },
+
+  /* ---------------- ADDED: Reynoldstown ---------------- */
+  {
+    name: "Reynoldstown Community Yoga",
+    venue: "Upper Lang-Carson Park / Lang-Carson Community Center", hood: "reynoldstown",
+    when: { weekly: 0 }, time: "10:00 AM", end: "11:00 AM", cost: "Donation-based",
+    note: "Yoga.ATL runs a vinyasa flow with the RCIL every Sunday — outdoors in Upper Lang-Carson when the weather cooperates, inside the community center when it doesn't. Doors close at 10, so arrive ten minutes early. Everyone walks over to Park Grounds for coffee afterward.",
+    url: "https://www.reynoldstown.net/calendar/yoga"
+  },
+  {
+    name: "Cello Night at Breaker Breaker",
+    venue: "Breaker Breaker · 795 Wylie St", hood: "reynoldstown",
+    when: { weekly: 4 }, time: "5:30 PM",
+    note: "Live cello on Thursday evenings at the Wylie St bar, right off the Beltline. Start time can drift — worth a glance at their Instagram.",
+    url: "https://www.instagram.com/breakerbreakeratl/"
+  },
+  {
+    name: "Jazz Sundays at Breaker Breaker",
+    venue: "Breaker Breaker · 795 Wylie St", hood: "reynoldstown",
+    when: { weekly: 0 }, time: "2:00 PM", end: "5:00 PM",
+    note: "Sunday afternoon jazz. Lines up nicely after community yoga and the farmers market up the street.",
+    url: "https://www.instagram.com/breakerbreakeratl/"
+  },
+  {
+    name: "Trivia at Wylie & Rum",
+    venue: "Wylie & Rum · 45 Moreland Ave SE, Ste 300", hood: "reynoldstown",
+    when: { weekly: 3 }, time: "7:15 PM", end: "8:45 PM", cost: "Free",
+    note: "Hosted by Matt Padula — $30, $20 and $10 for the top three teams. Caribbean food, and Wednesday is also Rum Punch Wednesday at $7.95 a glass.",
+    url: "https://www.instagram.com/wylieandrum/"
+  },
+
+  /* ---------------- ADDED: East Atlanta ---------------- */
+  {
+    name: "Taco Night at 97 Estoria",
+    venue: "97 Estoria · 727 Wylie St", hood: "eastatl",
+    when: { weekly: 2 }, time: "4:00 PM", end: "10:00 PM",
+    note: "Vice Taco Truck parks at the Cabbagetown dive every Tuesday for a full six-hour window. Big patio, cheap beer, zero pretense.",
+    url: "https://www.instagram.com/vicetacotruck/"
+  },
+  {
+    name: "Trivia at Side Saddle",
+    venue: "Side Saddle Wine Saloon · 680 Hamilton Ave SE", hood: "eastatl",
+    when: { weekly: 2 }, time: "7:00 PM", cost: "Free",
+    note: "Hosted by Outspoken Entertainment with up to $200 in special games. Natural wine bar next door to Finca to Filter, queer- and woman-owned, just off the Beltline.",
+    url: "https://www.sidesaddle.wine/new-page"
+  },
+  {
+    name: "Jazz Night at Side Saddle",
+    venue: "Side Saddle Wine Saloon · 680 Hamilton Ave SE", hood: "eastatl",
+    when: { weekly: 4 }, time: "7:00 PM", end: "10:00 PM",
+    note: "Live jazz out on the patio every Thursday. Reservations are a good idea — the space is small.",
+    url: "https://www.sidesaddle.wine/new-page"
+  },
+  {
+    name: "Salsa Night at Terminal South",
+    venue: "Terminal South · 1197 Memorial Dr SE", hood: "eastatl",
+    when: { dates: ["2026-09-12", "2026-09-26", "2026-10-10", "2026-10-24"] },
+    time: "7:00 PM", end: "8:00 PM",
+    note: "Every other Saturday through the Terminal South Social Club — a lesson first, then open dancing. RSVP on Meetup; new dates get posted there as the fall goes on.",
+    url: "https://www.meetup.com/terminal-south-social-club/"
+  },
+  {
+    name: "Fam Game Night at Terminal South",
+    venue: "Terminal South · 1197 Memorial Dr SE", hood: "eastatl",
+    when: { weekly: 5 }, time: "5:00 PM", end: "8:00 PM",
+    note: "Board and table games every Friday evening. Low-key way to close out the week on the east side.",
+    url: "https://www.meetup.com/terminal-south-social-club/"
+  },
+  {
+    name: "EAV Farmers Market",
+    venue: "572 Stokeswood Ave SE · across from Midway Pub", hood: "eastatl",
+    when: { weekly: 4, until: "2026-12-17" }, time: "4:00 PM", end: "8:00 PM", cost: "Free",
+    note: "One of Atlanta's oldest markets, running since 2006, and a Creative Loafing reader's pick five years straight. Thursday evenings instead of Saturday mornings, which is the whole appeal — produce, prepared dinners, artisan goods, an edible learning garden, and chef cooking demos. Season runs April through December.",
+    url: "https://cfmatl.org/eav/"
+  },
+  {
+    name: "East Atlanta Strut",
+    venue: "Flat Shoals Ave & Brownwood Park", hood: "eastatl",
+    when: { date: "2026-09-26" }, time: "12:00 PM", end: "6:00 PM", cost: "Free",
+    note: "EAV's signature street festival and parade — around 10,000 people. Strut 5K at 8:30am, parade and Battle of the Bands around 12:45, live music at Brownwood Park 2–6, plus a pet zone, a wing toss at the Midway bocce courts, and Strut Your Bake at the farmers market.",
+    url: "https://eastatlantastrut.com/"
+  },
+  {
+    name: "Tacos and Trivia",
+    venue: "The Midway Pub · 552 Flat Shoals Ave SE", hood: "eastatl",
+    when: { weekly: 2 }, time: "8:00 PM", cost: "Free",
+    note: "Tacos plus trivia on Tuesdays. Big patio and bocce courts out back — the same courts that host the wing toss during the Strut.",
+    url: "https://ineastatlanta.com/"
+  },
+  {
+    name: "Live music at The EARL",
+    venue: "The EARL · 488 Flat Shoals Ave SE", hood: "eastatl",
+    when: { weekly: 6 }, time: "8:30 PM",
+    note: "Restaurant up front, one of the city's best small rooms in the back — indie, rock, alternative, nearly every night. Home of the Earl Burger. Check the calendar for who's playing; this entry is just a standing reminder that something is.",
+    url: "https://badearl.com/"
+  },
+  {
+    name: "Live music at 529",
+    venue: "529 · 529 Flat Shoals Ave SE", hood: "eastatl",
+    when: { weekly: 5 }, time: "9:00 PM",
+    note: "Tiny, smoky punk and indie club with a closed-circuit TV over the bar so you can watch the band playing behind you. Cash only. Books secret shows fairly often, so the calendar is worth a look.",
+    url: "https://www.529atlanta.com/"
   }
 ];
 
@@ -1026,6 +1134,7 @@ function cadence(ev) {
     const ord = { 1: "1st", 2: "2nd", 3: "3rd", 4: "4th", "-1": "Last" }[w.nth] || w.nth + "th";
     return ord + " " + DOW_SHORT[w.monthly] + " monthly";
   }
+  if (w.dates) return w.dates.length + " dates this season";
   return "One night only";
 }
 

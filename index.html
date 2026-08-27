@@ -1,8 +1,13 @@
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
 <title>Events ATL — Eastside &amp; Midtown Event Calendar</title>
 
 <!-- ==========================================================
      Events ATL — a month-at-a-time calendar of real events in
-     Reynoldstown · Inman Park · Old Fourth Ward · Poncey-Highland · Midtown
+     Reynoldstown · Inman Park · Old Fourth Ward · Poncey-Highland
+     Midtown · East Atlanta · The Beltline
 
      TO ADD OR EDIT AN EVENT: scroll to the EVENTS array below.
      Everything else is machinery you can leave alone.
@@ -208,6 +213,18 @@ button.today-btn {
   color: var(--ink-soft);
 }
 button.today-btn:hover { border-color: var(--ink-faint); color: var(--ink); }
+button.theme-btn {
+  border: 1px solid var(--rule);
+  background: transparent;
+  border-radius: 50%;
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--ink-soft);
+  transition: border-color .15s, color .15s, transform .15s;
+}
+button.theme-btn:hover { border-color: var(--ink-faint); color: var(--ink); transform: translateY(-1px); }
 
 /* ---------- Legend / filters ---------- */
 .legend {
@@ -599,6 +616,7 @@ footer a:hover { text-decoration-color: currentColor; }
       <div class="monthlabel" id="monthlabel"></div>
       <button class="arrow" id="next" aria-label="Next month">›</button>
       <button class="today-btn" id="jumpToday">Today</button>
+      <button class="theme-btn" id="themeToggle" aria-label="Switch between light and dark">☾</button>
     </div>
     <div class="legend" id="legend"></div>
   </div>
@@ -634,6 +652,12 @@ footer a:hover { text-decoration-color: currentColor; }
 </aside>
 
 <script>
+/* Restore a saved theme before anything paints, so there's no flash. */
+try {
+  const saved = localStorage.getItem("eventsatl:theme");
+  if (saved) document.documentElement.setAttribute("data-theme", saved);
+} catch (e) {}
+
 /* ============================================================================
    NEIGHBORHOODS
    ========================================================================== */
@@ -1381,4 +1405,24 @@ document.addEventListener("keydown", e => {
 });
 
 render();
+
+/* ---------- Light / dark toggle ---------- */
+const themeBtn = document.getElementById("themeToggle");
+
+function currentTheme() {
+  return document.documentElement.getAttribute("data-theme")
+    || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}
+function paintThemeBtn() {
+  const dark = currentTheme() === "dark";
+  themeBtn.textContent = dark ? "☀" : "☾";
+  themeBtn.title = dark ? "Switch to light" : "Switch to dark";
+}
+themeBtn.addEventListener("click", () => {
+  const next = currentTheme() === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  try { localStorage.setItem("eventsatl:theme", next); } catch (e) {}
+  paintThemeBtn();
+});
+paintThemeBtn();
 </script>

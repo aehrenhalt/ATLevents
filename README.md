@@ -1,6 +1,6 @@
-# Cute ATL
+# EVENTS ATL
 
-A one-month-at-a-time calendar of real events in **Reynoldstown, Inman Park, Old Fourth Ward, Poncey-Highland, Midtown** — plus the Beltline.
+A one-month-at-a-time calendar of real events in **Reynoldstown, Inman Park, Old Fourth Ward, East ATL, Poncey-Highland, Midtown** — plus the Beltline.
 
 Everything lives in a single `index.html`. No build step, no dependencies, no server. Double-click it and it works.
 
@@ -14,7 +14,7 @@ Open `index.html`, search for `EVENTS`, and add an object to the array:
 {
   name: "Movie Monday",
   venue: "Ladybird Grove & Mess Hall",
-  hood: "o4w",                       // reynoldstown | inman | o4w | poncey | midtown | beltline
+  hood: "o4w",                       // reynoldstown | inman | o4w | poncey | midtown | eastatl | beltline
   when: { weekly: 1 },               // see rules below
   time: "7:30 PM",
   end:  "10:00 PM",                  // optional
@@ -38,6 +38,17 @@ Add `from: "YYYY-MM-DD"` and/or `until: "YYYY-MM-DD"` to any rule to bound a sea
 
 ---
 
+### Adding a neighborhood
+
+Four places, in this order:
+
+1. A hex value in the light `:root{}` **and** both dark blocks (`@media (prefers-color-scheme: dark)` and `:root[data-theme="dark"]`) — e.g. `--h-eastatl`.
+2. An entry in the `HOODS` object. Position matters: the legend chips render in insertion order.
+3. An `<i style="--d:var(--h-yourhood)">` dot in the `.marquee` div.
+4. The `hood` comment above, so future-you knows the key exists.
+
+**East Atlanta** covers the broader southeast cluster, not just the Village — 97 Estoria is Cabbagetown, Side Saddle is Boulevard Heights, and Terminal South sits on the Reynoldstown edge.
+
 ## Putting it online
 
 **GitHub Pages from a private repo requires a paid plan** (Pro, Team, or Enterprise — Pages on free accounts only serves public repos). Pick whichever fits:
@@ -59,7 +70,7 @@ Then Settings → Pages → Source: `main` / root.
 
 ## Where these events came from
 
-Verified **August 17, 2026**. Bars change their nights without telling anyone, so every event links back to the venue's own page — check before you go.
+Verified **August 27, 2026**. Bars change their nights without telling anyone, so every event links back to the venue's own page — check before you go.
 
 - [Ladybird Grove & Mess Hall](https://www.ladybirdatl.com/happenings) — Movie Mondays, Chess Knight, Saturday DJ
 - [The Krog District](https://www.thekrogdistrict.com/events) — trivia, concert series, run club, markets
@@ -72,6 +83,11 @@ Verified **August 17, 2026**. Bars change their nights without telling anyone, s
 - [Plaza Theatre](https://www.plazaatlanta.com/now-showing/) — Rocky Horror w/ LDOD
 - [Freedom Farmers Market](https://freedomfarmersmkt.com/) — Saturdays at the Carter Center
 - [Dad's Garage](https://www.dadsgarage.com/) — improv, Thu–Sat
-- [Wheelbarrow Festival](https://www.wheelbarrowfestival.com/) · [Beltline Lantern Parade](https://beltline.org/art/lantern-parade/)
+- [Reynoldstown / RCIL](https://www.reynoldstown.net/calendar/yoga) — Sunday community yoga
+- [Side Saddle](https://www.sidesaddle.wine/new-page) — Tuesday trivia, Thursday jazz
+- [Terminal South Social Club](https://www.meetup.com/terminal-south-social-club/) — salsa nights, Friday game night
+- [EAV Farmers Market](https://cfmatl.org/eav/) — Thursday evenings, April–December
+- [The EARL](https://badearl.com/) · [529](https://www.529atlanta.com/) — EAV live music calendars
+- [Wheelbarrow Festival](https://www.wheelbarrowfestival.com/) · [Beltline Lantern Parade](https://beltline.org/art/lantern-parade/) · [East Atlanta Strut](https://eastatlantastrut.com/)
 
-Good accounts to mine for new listings: `@ladybirdatlanta`, `@stereo.atl`, `@krogstreetmarket`, `@poncecitymarket`, `@highmuseumofart`, `@piedmontpark`, `@atlantabeltline`, `@freedomfarmersmkt`.
+Good accounts to mine for new listings: `@ladybirdatlanta`, `@stereoatl`, `@thekrogdistrict`, `@poncecitymarket`, `@highmuseumofart`, `@piedmontpark`, `@atlantabeltline`, `@freedomfarmersmkt`, `@breakerbreakeratl`, `@wylieandrum`, `@vicetacotruck`, `@sidesaddlewine`, `@eavfarmersmarket`.
